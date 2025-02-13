@@ -113,6 +113,40 @@ describe('Syncmatic', () => {
 		unSync();
 	});
 
+	it('should block page unload and force sync when there is a pending sync', () => {
+		// Arrange.
+		const eventEmitter = createEventEmitter();
+
+		const syncFn = vi.fn(() => sleep(500));
+
+		const { unSync } = sync({
+			subscribe: (cb) => eventEmitter.subscribe(cb),
+			syncFn,
+			wait: 100,
+			options: {
+				notifyOnLeave: true,
+			},
+		});
+
+		// Act - Initiate a sync.
+		eventEmitter.notify();
+
+		// Act - Attempt to unload the page.
+		const event = new Event('beforeunload');
+
+		event.preventDefault = vi.fn();
+
+		window.dispatchEvent(event);
+
+		// Assert.
+		// eslint-disable-next-line @typescript-eslint/unbound-method
+		expect(event.preventDefault).toHaveBeenCalledTimes(1);
+		expect(syncFn).toHaveBeenCalledTimes(1);
+
+		// Cleanup.
+		unSync();
+	});
+
 	it('should cleanup on sync stop', () => {
 		// Arrange.
 		const eventEmitter = createEventEmitter();

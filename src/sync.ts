@@ -9,11 +9,9 @@ export type SyncArgs = {
 	};
 };
 
-export function sync({ subscribe, syncFn, wait, options = {} }: SyncArgs) {
-	const { notifyOnLeave } = options;
-
-	let abortController: AbortController | null = null;
+export function sync({ subscribe, syncFn, wait, options }: SyncArgs) {
 	let isSyncing = false;
+	let abortController: AbortController | null = null;
 
 	const _sync = debounce(async () => {
 		isSyncing = true;
@@ -32,10 +30,18 @@ export function sync({ subscribe, syncFn, wait, options = {} }: SyncArgs) {
 	const onUnload = (e: BeforeUnloadEvent) => {
 		if (isSyncing) {
 			e.preventDefault();
+
+			return;
+		}
+
+		if (_sync.pending()) {
+			e.preventDefault();
+
+			_sync.flush();
 		}
 	};
 
-	if (notifyOnLeave) {
+	if (options?.notifyOnLeave) {
 		window.addEventListener('beforeunload', onUnload);
 	}
 
