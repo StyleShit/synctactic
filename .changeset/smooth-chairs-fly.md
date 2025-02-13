@@ -1,5 +1,5 @@
 ---
-'syncmatic': patch
+'synctactic': patch
 ---
 
 Flush pending sync on leave

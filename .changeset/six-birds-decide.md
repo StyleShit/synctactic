@@ -1,5 +1,5 @@
 ---
-'syncmatic': patch
+'synctactic': patch
 ---
 
 Initial syncing API

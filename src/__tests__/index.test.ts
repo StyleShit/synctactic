@@ -1,7 +1,7 @@
 import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
 import { sync } from '../sync';
 
-describe('Syncmatic', () => {
+describe('Synctactic', () => {
 	beforeAll(() => {
 		vi.useFakeTimers();
 	});
