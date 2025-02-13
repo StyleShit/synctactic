@@ -22,6 +22,10 @@ export function sync({ subscribe, syncFn, options }: SyncArgs) {
 	const unsubscribe = subscribe(_sync);
 
 	const unSync = () => {
+		if (_sync.pending()) {
+			_sync.flush();
+		}
+
 		unsubscribe();
 	};
 

@@ -106,6 +106,30 @@ describe('Syncmatic', () => {
 		expect(syncFn).not.toHaveBeenCalled();
 	});
 
+	it('should flush a pending sync on stop', () => {
+		// Arrange.
+		const eventEmitter = createEventEmitter();
+
+		const syncFn = vi.fn(() => sleep(500));
+
+		const { unSync } = sync({
+			subscribe: (cb) => eventEmitter.subscribe(cb),
+			syncFn,
+			options: {
+				wait: 100,
+			},
+		});
+
+		// Act - Initiate a sync.
+		eventEmitter.notify();
+
+		// Act - Stop the sync.
+		unSync();
+
+		// Assert.
+		expect(syncFn).toHaveBeenCalledTimes(1);
+	});
+
 	it('should support force sync', () => {
 		// Arrange.
 		const eventEmitter = createEventEmitter();
