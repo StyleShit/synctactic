@@ -19,7 +19,9 @@ describe('Synctactic', () => {
 		const { unSync } = sync({
 			subscribe: (cb) => eventEmitter.subscribe(cb),
 			syncFn,
-			wait: 100,
+			options: {
+				wait: 100,
+			},
 		});
 
 		// Assert.
@@ -58,7 +60,9 @@ describe('Synctactic', () => {
 		const { unSync } = sync({
 			subscribe: (cb) => eventEmitter.subscribe(cb),
 			syncFn,
-			wait: 100,
+			options: {
+				wait: 100,
+			},
 		});
 
 		// Act - Initiate a first sync.
@@ -88,8 +92,8 @@ describe('Synctactic', () => {
 		const { unSync } = sync({
 			subscribe: (cb) => eventEmitter.subscribe(cb),
 			syncFn,
-			wait: 100,
 			options: {
+				wait: 100,
 				notifyOnLeave: true,
 			},
 		});
@@ -122,8 +126,8 @@ describe('Synctactic', () => {
 		const { unSync } = sync({
 			subscribe: (cb) => eventEmitter.subscribe(cb),
 			syncFn,
-			wait: 100,
 			options: {
+				wait: 100,
 				notifyOnLeave: true,
 			},
 		});
@@ -156,7 +160,9 @@ describe('Synctactic', () => {
 		const { unSync } = sync({
 			subscribe: (cb) => eventEmitter.subscribe(cb),
 			syncFn,
-			wait: 100,
+			options: {
+				wait: 100,
+			},
 		});
 
 		// Act.
@@ -177,7 +183,9 @@ describe('Synctactic', () => {
 		const { unSync } = sync({
 			subscribe: (cb) => eventEmitter.subscribe(cb),
 			syncFn,
-			wait: 100,
+			options: {
+				wait: 100,
+			},
 		});
 
 		// Act - Initiate a sync.
@@ -199,7 +207,9 @@ describe('Synctactic', () => {
 		const { forceSync, unSync } = sync({
 			subscribe: (cb) => eventEmitter.subscribe(cb),
 			syncFn,
-			wait: 100,
+			options: {
+				wait: 100,
+			},
 		});
 
 		// Act.

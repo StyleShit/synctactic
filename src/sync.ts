@@ -3,13 +3,15 @@ import { debounce } from './debounce';
 export type SyncArgs = {
 	subscribe: (cb: () => unknown) => () => void;
 	syncFn: (signal: AbortSignal) => unknown;
-	wait: number;
 	options?: {
+		wait?: number;
 		notifyOnLeave?: boolean;
 	};
 };
 
-export function sync({ subscribe, syncFn, wait, options }: SyncArgs) {
+export function sync({ subscribe, syncFn, options = {} }: SyncArgs) {
+	const { notifyOnLeave = false, wait = 0 } = options;
+
 	let isSyncing = false;
 	let abortController: AbortController | null = null;
 
@@ -41,7 +43,7 @@ export function sync({ subscribe, syncFn, wait, options }: SyncArgs) {
 		flushIfNeeded();
 	};
 
-	if (options?.notifyOnLeave) {
+	if (notifyOnLeave) {
 		window.addEventListener('beforeunload', onUnload);
 	}
 
