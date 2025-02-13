@@ -25,20 +25,20 @@ export function sync({ subscribe, syncFn, wait, options }: SyncArgs) {
 		isSyncing = false;
 	}, wait);
 
+	const flushIfNeeded = () => {
+		if (_sync.pending()) {
+			_sync.flush();
+		}
+	};
+
 	const unsubscribe = subscribe(_sync);
 
 	const onUnload = (e: BeforeUnloadEvent) => {
-		if (isSyncing) {
+		if (isSyncing || _sync.pending()) {
 			e.preventDefault();
-
-			return;
 		}
 
-		if (_sync.pending()) {
-			e.preventDefault();
-
-			_sync.flush();
-		}
+		flushIfNeeded();
 	};
 
 	if (options?.notifyOnLeave) {
@@ -46,9 +46,7 @@ export function sync({ subscribe, syncFn, wait, options }: SyncArgs) {
 	}
 
 	const unSync = () => {
-		if (_sync.pending()) {
-			_sync.flush();
-		}
+		flushIfNeeded();
 
 		unsubscribe();
 
