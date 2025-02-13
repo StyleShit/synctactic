@@ -1,16 +1,27 @@
-import { describe, expect, it, vi } from 'vitest';
+import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
 import { sync } from '../sync';
 
 describe('Syncmatic', () => {
-	it('should subscribe to changes and sync on each change', () => {
+	beforeAll(() => {
+		vi.useFakeTimers();
+	});
+
+	afterAll(() => {
+		vi.useRealTimers();
+	});
+
+	it('should subscribe to changes and run a delayed sync on each change', () => {
 		// Arrange.
 		const eventEmitter = createEventEmitter();
 		const syncFn = vi.fn();
 
 		// Act.
-		sync({
+		const { unSync } = sync({
 			subscribe: (cb) => eventEmitter.subscribe(cb),
 			syncFn,
+			options: {
+				wait: 100,
+			},
 		});
 
 		// Assert.
@@ -18,9 +29,20 @@ describe('Syncmatic', () => {
 
 		// Act.
 		eventEmitter.notify();
+		eventEmitter.notify();
+		eventEmitter.notify();
+
+		// Assert.
+		expect(syncFn).not.toHaveBeenCalled();
+
+		// Act.
+		vi.runAllTimers();
 
 		// Assert.
 		expect(syncFn).toHaveBeenCalledTimes(1);
+
+		// Cleanup.
+		unSync();
 	});
 
 	it('should abort previous syncs', () => {
@@ -31,22 +53,34 @@ describe('Syncmatic', () => {
 
 		const syncFn = vi.fn((_signal: AbortSignal) => {
 			signals.push(_signal);
+
+			return sleep(500);
 		});
 
-		sync({
+		const { unSync } = sync({
 			subscribe: (cb) => eventEmitter.subscribe(cb),
 			syncFn,
+			options: {
+				wait: 100,
+			},
 		});
 
-		// Act.
+		// Act - Initiate a first sync.
 		eventEmitter.notify();
+		vi.advanceTimersByTime(100);
+
+		// Act - Initiate a second sync that should abort the first sync.
 		eventEmitter.notify();
+		vi.advanceTimersByTime(100);
 
 		// Assert.
 		expect(syncFn).toHaveBeenCalledTimes(2);
 
 		expect(signals[0]?.aborted).toBe(true);
 		expect(signals[1]?.aborted).toBe(false);
+
+		// Cleanup.
+		unSync();
 	});
 
 	it('should cleanup on sync stop', () => {
@@ -58,6 +92,9 @@ describe('Syncmatic', () => {
 		const { unSync } = sync({
 			subscribe: (cb) => eventEmitter.subscribe(cb),
 			syncFn,
+			options: {
+				wait: 100,
+			},
 		});
 
 		// Act.
@@ -75,16 +112,22 @@ describe('Syncmatic', () => {
 
 		const syncFn = vi.fn();
 
-		const { forceSync } = sync({
+		const { forceSync, unSync } = sync({
 			subscribe: (cb) => eventEmitter.subscribe(cb),
 			syncFn,
+			options: {
+				wait: 100,
+			},
 		});
 
 		// Act.
-		void forceSync();
+		forceSync();
 
 		// Assert.
 		expect(syncFn).toHaveBeenCalledTimes(1);
+
+		// Cleanup.
+		unSync();
 	});
 });
 
@@ -108,4 +151,10 @@ function createEventEmitter() {
 			return listeners;
 		},
 	};
+}
+
+function sleep(ms: number) {
+	return new Promise((resolve) => {
+		setTimeout(resolve, ms);
+	});
 }

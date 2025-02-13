@@ -1,18 +1,23 @@
+import { debounce } from './debounce';
+
 export type SyncArgs = {
 	subscribe: (cb: () => unknown) => () => void;
 	syncFn: (signal: AbortSignal) => unknown;
+	options: {
+		wait: number;
+	};
 };
 
-export function sync({ subscribe, syncFn }: SyncArgs) {
+export function sync({ subscribe, syncFn, options }: SyncArgs) {
 	let abortController: AbortController | null = null;
 
-	const _sync = async () => {
+	const _sync = debounce(async () => {
 		abortController?.abort();
 
 		abortController = new AbortController();
 
 		await syncFn(abortController.signal);
-	};
+	}, options.wait);
 
 	const unsubscribe = subscribe(_sync);
 
@@ -22,6 +27,6 @@ export function sync({ subscribe, syncFn }: SyncArgs) {
 
 	return {
 		unSync,
-		forceSync: _sync,
+		forceSync: _sync.flush,
 	};
 }
