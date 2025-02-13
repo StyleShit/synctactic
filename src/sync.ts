@@ -3,12 +3,10 @@ import { debounce } from './debounce';
 export type SyncArgs = {
 	subscribe: (cb: () => unknown) => () => void;
 	syncFn: (signal: AbortSignal) => unknown;
-	options: {
-		wait: number;
-	};
+	wait: number;
 };
 
-export function sync({ subscribe, syncFn, options }: SyncArgs) {
+export function sync({ subscribe, syncFn, wait }: SyncArgs) {
 	let abortController: AbortController | null = null;
 
 	const _sync = debounce(async () => {
@@ -17,7 +15,7 @@ export function sync({ subscribe, syncFn, options }: SyncArgs) {
 		abortController = new AbortController();
 
 		await syncFn(abortController.signal);
-	}, options.wait);
+	}, wait);
 
 	const unsubscribe = subscribe(_sync);
 

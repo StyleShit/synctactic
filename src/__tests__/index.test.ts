@@ -19,9 +19,7 @@ describe('Syncmatic', () => {
 		const { unSync } = sync({
 			subscribe: (cb) => eventEmitter.subscribe(cb),
 			syncFn,
-			options: {
-				wait: 100,
-			},
+			wait: 100,
 		});
 
 		// Assert.
@@ -60,9 +58,7 @@ describe('Syncmatic', () => {
 		const { unSync } = sync({
 			subscribe: (cb) => eventEmitter.subscribe(cb),
 			syncFn,
-			options: {
-				wait: 100,
-			},
+			wait: 100,
 		});
 
 		// Act - Initiate a first sync.
@@ -92,9 +88,7 @@ describe('Syncmatic', () => {
 		const { unSync } = sync({
 			subscribe: (cb) => eventEmitter.subscribe(cb),
 			syncFn,
-			options: {
-				wait: 100,
-			},
+			wait: 100,
 		});
 
 		// Act.
@@ -115,9 +109,7 @@ describe('Syncmatic', () => {
 		const { unSync } = sync({
 			subscribe: (cb) => eventEmitter.subscribe(cb),
 			syncFn,
-			options: {
-				wait: 100,
-			},
+			wait: 100,
 		});
 
 		// Act - Initiate a sync.
@@ -139,9 +131,7 @@ describe('Syncmatic', () => {
 		const { forceSync, unSync } = sync({
 			subscribe: (cb) => eventEmitter.subscribe(cb),
 			syncFn,
-			options: {
-				wait: 100,
-			},
+			wait: 100,
 		});
 
 		// Act.
