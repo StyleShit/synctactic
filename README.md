@@ -5,7 +5,7 @@ Lightweight one-way background syncing library.
 ## Installation
 
 ```bash
-npm install synctactic
+npm i synctactic
 ```
 
 ## Features

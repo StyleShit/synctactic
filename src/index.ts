@@ -1,1 +1,1 @@
-export { sync } from './sync';
+export { sync, type SyncArgs } from './sync';
