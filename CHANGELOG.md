@@ -1,5 +1,11 @@
 # synctactic
 
+## 0.0.2
+
+### Patch Changes
+
+- 02a742b: Export `SyncArgs` type
+
 ## 0.0.1
 
 ### Patch Changes
